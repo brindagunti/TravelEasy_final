@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="" />
+    <meta name="author" content="Travel Easy" />
+    <meta name="generator" content="Hugo 0.72.0" />
+    <title>Blog Page · Travel Easy</title>
+
+    <style>
+      /* Styling as per your original code */
+      .button1 {
+        background-color: lightskyblue;
+        border: none;
+        border-radius: 50%;
+        color: white;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .button1:hover {
+        background-color: lightskyblue;
+      }
+      .back-to-top {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+      }
+      @keyframes typing {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+      @keyframes blink {
+        50% {
+          border-color: transparent;
+        }
+      }
+      .animated-title {
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        font-size: 2rem;
+        font-weight: bold;
+        border-right: 0.15em solid black;
+        animation: typing 4s steps(30, end) infinite, blink 0.75s step-end infinite;
+      }
+      h2 {
+        text-align: center;
+      }
+      .fancy-text {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #343a40;
+        margin-bottom: 20px;
+      }
+    </style>
+
+    <!-- Bootstrap core CSS -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
+      integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I"
+      crossorigin="anonymous"
+    />
+</head>
+
+<body>
+    <header>
+        <!-- Navbar and Header -->
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container">
+                <a href="#" class="navbar-brand d-flex align-items-center">
+                    <strong>Travel Easy Blog</strong>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="py-5 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <h1 class="animated-title font-weight-light">Travel Easy</h1>
+                    <p class="lead text-muted">
+                        Welcome to the Travel Easy blog! Discover travel tips, destination
+                        guides, and insider advice to make your next trip unforgettable.
+                    </p>
+                    <p><a href="/Home.html" class="btn btn-primary my-2">Back to Home Page</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Form -->
+        <div class="container mt-4">
+            <div class="text-center mb-4">
+                <div class="fancy-text">Post a Blog</div>
+            </div>
+
+            <div class="container mt-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="card-description">Card Description</label>
+                        <input
+                            type="text"
+                            id="card-description"
+                            class="form-control mb-2"
+                            placeholder="Enter description..."
+                            required
+                        />
+                    </div>
+                    <div class="col-md-6">
+                        <label for="card-image">Card Image</label>
+                        <input type="file" id="card-image" class="form-control mb-2" accept="image/*" required />
+                    </div>
+                </div>
+                <button id="addCardBtn" class="btn btn-primary mt-4">Add Card</button>
+
+                <div class="row mt-4" id="card-container">
+                    <!-- Dynamic cards will be added here -->
+                </div>
+
+                <!-- Blog List Section -->
+                <div class="row mt-4" id="blog-list">
+                    <!-- Fetched blog posts will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Link to the external JavaScript file -->
+        <script>
+          document.getElementById('addCardBtn').addEventListener('click', async () => {
+              const description = document.getElementById('card-description').value;
+              const imageFile = document.getElementById('card-image').files[0];
+              const user_id = 1; // Adjust this according to your user management
+
+              if (!imageFile) {
+                  console.error('No image selected.');
+                  return;
+              }
+
+              const formData = new FormData();
+              formData.append('description', description);
+              formData.append('image', imageFile);
+              formData.append('user_id', user_id);
+
+              try {
+                  const response = await fetch('http://localhost:3000/api/blogs', {
+                      method: 'POST',
+                      body: formData,
+                  });
+
+                  if (response.ok) {
+                      const blog = await response.json();
+                      console.log('New blog added:', blog);
+                      addCardToPage(blog);
+                  } else {
+                      console.error('Error adding the blog:', await response.text());
+                  }
+              } catch (error) {
+                  console.error('Network error:', error);
+              }
+          });
+
+          async function fetchBlogs() {
+              try {
+                  const response = await fetch('http://localhost:3000/api/blogs');
+                  if (response.ok) {
+                      const blogs = await response.json();
+                      const blogListHTML = blogs.map(blog => `
+                          <div class="blog-card col-md-4 mb-4">
+                              <img src="${blog.image_url}" class="card-img-top" alt="Blog Image" onerror="this.onerror=null; this.src='default-image.jpg';" />
+                              <p>${blog.description}</p>
+                          </div>
+                      `).join('');
+
+                      document.getElementById('blog-list').innerHTML = blogListHTML; // Populate the blog list
+                  } else {
+                      console.error('Error fetching blogs:', await response.text());
+                  }
+              } catch (error) {
+                  console.error('Network error:', error);
+              }
+          }
+
+          // Call fetchBlogs when the page loads
+          document.addEventListener('DOMContentLoaded', fetchBlogs);
+
+          function addCardToPage(blog) {
+              const cardContainer = document.getElementById('card-container');
+              const card = document.createElement('div');
+              card.classList.add('col-md-4', 'mb-4');
+
+              card.innerHTML = `
+                  <div class="card">
+                      <img src="${blog.image_url}" class="card-img-top" alt="Blog Image" onerror="this.onerror=null; this.src='default-image.jpg';" />
+                      <div class="card-body">
+                          <p class="card-text">${blog.description}</p>
+                      </div>
+                  </div>
+              `;
+
+              cardContainer.appendChild(card);
+          }
+        </script>
+    </main>
+</body>
+</html>

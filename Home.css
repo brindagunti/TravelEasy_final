@@ -1,0 +1,83 @@
+.bold{
+    font-weight: bolder;
+    font-size: xx-large;
+}
+.img {
+    width: 100%;
+    height: 90vh;
+  }
+  .image-column {
+  position: relative;
+  padding: 0;
+}
+
+.image-column img {
+  width: 100%;
+  height: auto;
+}
+.image-column::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3); 
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+.image-column:hover::before {
+    opacity: 1; 
+}
+.overlay-text {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+.image-column:hover .overlay-text {
+    background: rgba(0, 0, 0, 0.8); 
+}
+
+.main-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  padding: 10px;
+  text-align: center;
+  font-size: 4em;
+  width: 100%;
+  font-weight: bolder;
+}
+
+.plan{
+    padding-top: 2%;
+    padding-left: 2%;
+    padding-bottom: 2%;
+}
+.plan h1{
+    font-weight: bold;
+}
+
+.places{
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-left: 2%;
+    padding-bottom: 2%;
+    gap: 20px;
+}
+.places img{
+    height:300px;
+    width:400px;
+    border-radius: 10%;
+
+}
+
+.places h4{
+    text-align: center;
+}

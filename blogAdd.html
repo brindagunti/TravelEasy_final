@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dynamic Card</title>
+  <!-- Add Bootstrap CSS -->
+  <link
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6">
+        <label for="card-description">Card Description</label>
+        <input
+          type="text"
+          id="card-description"
+          class="form-control mb-2"
+          placeholder="Enter description..."
+        />
+      </div>
+      <div class="col-md-6">
+        <label for="card-image">Card Image</label>
+        <input
+          type="file"
+          id="card-image"
+          class="form-control mb-2"
+          accept="image/*"
+        />
+      </div>
+    </div>
+    <button id="addCardBtn" class="btn btn-primary mt-4">Add Card</button>
+
+    <div class="row mt-4" id="card-container">
+      <!-- Dynamic cards will be added here -->
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.getElementById("addCardBtn").addEventListener("click", function () {
+      const description = document.getElementById("card-description").value;
+      const imageFile = document.getElementById("card-image").files[0];
+
+      if (!description || !imageFile) {
+        alert("Please enter a description and upload an image.");
+        return;
+      }
+
+      const card = document.createElement("div");
+      card.classList.add("col-md-4", "mb-4");
+
+      // Create a URL for the image file
+      const imageURL = URL.createObjectURL(imageFile);
+
+      card.innerHTML = `
+        <div class="card shadow-sm">
+          <img src="${imageURL}" class="bd-placeholder-img card-img-top" width="100%" height="225" alt="Card image">
+          <div class="card-body">
+            <p class="card-text">${description}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <div class="btn-group">
+                <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+              </div>
+              <small class="text-muted">Just now</small>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("card-container").appendChild(card);
+
+      // Clear the input fields after adding the card
+      document.getElementById("card-description").value = "";
+      document.getElementById("card-image").value = "";
+    });
+  </script>
+</body>
+</html>

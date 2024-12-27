@@ -1,0 +1,148 @@
+/* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('./chatbot.jpg'); /* Apply background image */
+    background-size: cover; /* Ensure the image covers the entire page */
+    background-position: center; /* Position the image in the center */
+    background-repeat: no-repeat; /* Don't repeat the image */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+    overflow: hidden; /* Prevent scrolling on the background */
+}
+
+/* Container for the chatbot */
+#chatbot-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    position: absolute; /* Full-screen placement */
+}
+
+/* Chatbot box */
+#chatbot {
+    width: 600px; /* Wider width for better readability */
+    height: 700px; /* Increased height for more space */
+    background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for the background */
+    border: 1px solid #ccc;
+    border-radius: 12px; /* Slightly rounded corners */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Softer shadow for a modern look */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent overflow */
+    position: relative; /* To position the Home button */
+}
+
+/* Home button styling */
+#home-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 8px 16px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#home-btn:hover {
+    background-color: #45a049;
+}
+
+/* Chat window */
+#chat-window {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow: hidden; /* Prevent overflow of messages */
+    background-color: #f9f9f9; /* Light background for contrast */
+}
+
+/* Styling for messages */
+#chat-messages {
+    flex: 1;
+    overflow-y: auto; /* Scrollable messages */
+    margin-bottom: 15px;
+    padding-right: 10px; /* Padding for smooth scrolling */
+}
+
+/* Individual message styling */
+#chat-messages div {
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word; /* Ensure long words break properly */
+    font-size: 14px; /* Slightly larger text */
+    line-height: 1.4; /* Better readability */
+}
+
+/* User and bot message styling */
+.user-message {
+    background-color: #e1f5fe;
+    align-self: flex-end;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.bot-message {
+    background-color: #e8eaf6;
+    align-self: flex-start;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Input and button container */
+#chat-input-container {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #ddd; /* Divider for separation */
+    padding: 10px;
+    background-color: #fff; /* Ensure input area stands out */
+}
+
+/* Input field styling */
+#chat-input {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px 0 0 6px;
+    font-size: 14px;
+    outline: none; /* Remove default focus outline */
+    transition: border 0.3s;
+}
+
+#chat-input:focus {
+    border-color: #4caf50; /* Highlight input on focus */
+}
+
+/* Send button styling */
+#send-btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+#send-btn:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #chatbot {
+        width: 90%; /* Make it fit smaller screens */
+        height: 80%; /* Adjust height for smaller viewports */
+    }
+}

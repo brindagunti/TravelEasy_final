@@ -11,6 +11,78 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="LoginPage.css" />
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      .background {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        animation: backgroundChange 15s infinite;
+      }
+
+      @keyframes backgroundChange {
+        0% {
+          background-image: url("https://media.istockphoto.com/id/2135023427/photo/woman-traveler-with-backpack-enjoying-balinese-hindu-temple-entrance-female-tourist-during.jpg?s=2048x2048&w=is&k=20&c=IxtllNlNdwRLRxorYRmioZ5qGIOaF6sM2gJrrngGBSs=");
+        }
+        40% {
+          background-image: url("https://plus.unsplash.com/premium_photo-1677002240252-af3f88114efc?q=80&w=2025&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+        }
+        75% {
+          background-image: url("https://images.unsplash.com/photo-1528127269322-539801943592?w=1920&auto=format&fit=crop&q=80&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHRvdXJpc218ZW58MHx8MHx8fDA%3D");
+        }
+        100% {
+          background-image: url("https://media.istockphoto.com/id/499630236/photo/hiker-walks-on-train-in-himalayas.jpg?s=2048x2048&w=is&k=20&c=vBvN5XWbijbkQ7wyWJDRK2Br2XLi-JXIlr1OXvwM_UQ=");
+        }
+      }
+
+      .login-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        z-index: 1;
+      }
+
+      .card {
+        width: 100%;
+        max-width: 400px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+      }
+
+      .form-label-group label,
+      .form-control {
+        font-size: 1.2rem;
+      }
+
+      .btn {
+        font-size: 1.2rem;
+      }
+
+      .card-title {
+        font-size: 2rem;
+      }
+
+      .mb-2 a {
+        font-size: 1.1rem;
+      }
+
+      .background {
+        transition: background-image 1s ease-in-out;
+      }
+    </style>
 </head>
 
 <body>
@@ -19,44 +91,47 @@
             <h1 class="tr1 text-primary">TravelEasy</h1>
         </div>
     </div>
-    <main style="background-image: url(https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=2073&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D); background-repeat: no-repeat; background-size: cover;">
-        <div class="d-flex flex-wrap w-100 justify-content-end align-items-center">
-            <div class="w-50">
-                <div class="col-md-6 mx-auto">
-                    <div class="card card-signin my-5">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">Sign In</h5>
-                            <form id="signinForm" onsubmit="handleSignin(event)">
-                                <div class="form-label-group mb-2">Enter Your Login Details</div>
-                                <div class="form-label-group">
-                                    <label for="signinUsername">Username</label>
-                                    <input
-                                        type="text"
-                                        id="signinUsername" 
-                                        class="form-control mt-2 mb-2"
-                                        placeholder="Enter Your Username"
-                                        required
-                                    />
+    <main>
+        <div class="background">
+            <div class="login-container">
+                <div class="d-flex flex-wrap w-100 justify-content-end align-items-center">
+                    <div class="w-50">
+                        <div class="col-md-6 mx-auto">
+                            <div class="card card-signin my-5">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Sign In</h5>
+                                    <form id="signinForm" onsubmit="handleSignin(event)">
+                                        <div class="form-label-group mb-2">Enter Your Login Details</div>
+                                        <div class="form-label-group">
+                                            <label for="signinUsernameOrEmail">Username or Email</label>
+                                            <input
+                                                type="text"
+                                                id="signinUsernameOrEmail" 
+                                                class="form-control mt-2 mb-2"
+                                                placeholder="Enter Your Username or Email"
+                                                required
+                                            />
+                                        </div>
+                                        <div class="form-label-group">
+                                            <label for="signinPassword">Password</label>
+                                            <input
+                                                type="password"
+                                                id="signinPassword"
+                                                class="form-control mt-2 mb-2"
+                                                placeholder="Password"
+                                                required
+                                            />
+                                        </div>
+                                        <button type="submit" class="btn btn-light">Sign In</button>
+                                    </form>
+                                    <div class="mb-2 text-center">Don't have an account? <a href="signup.html">Sign Up</a></div>
                                 </div>
-                                <div class="form-label-group">
-                                    <label for="signinPassword">Password</label>
-                                    <input
-                                        type="password"
-                                        id="signinPassword"
-                                        class="form-control mt-2 mb-2"
-                                        placeholder="Password"
-                                        required
-                                    />
-                                </div>
-                                <button type="submit" class="btn btn-light">Sign In</button>
-                            </form>
-                            <div class="mb-2 d-flex justify-content-end"><a href="https://www.youtube.com/">Forgot password?</a></div>
-                            <div class="mb-2 text-center">Don't have an account? <a href="signup.html">Sign Up</a></div>
-                        </div>
+                            </div>
+                        </div>  
                     </div>
-                </div>  
+                </div> 
             </div>
-        </div> 
+        </div>
     </main>
     <script src="login.js"></script>
 </body>

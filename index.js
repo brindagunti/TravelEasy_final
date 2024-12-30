@@ -1,5 +1,6 @@
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 
+const nodemailer = require("nodemailer");
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -13,9 +14,25 @@ const app = express();
 const port = 3000;  // Adjust the port if needed
 app.use(express.static(path.join(__dirname)));
 
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
+
+var transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    service: "gmail",
+    auth: {
+        user: "mittapallibharathkumar2005@gmail.com",  // Your Gmail address
+        pass: "qutngbjqayjoxsxi",                      // Your Gmail app password
+    },
+    port: 465,
+    secure: true,
+    connectionTimeout: 20000,  // Increased timeout
+    greetingTimeout: 20000,
+});
+
+
 
 // PostgreSQL connection
 const pool = new Pool({
@@ -27,20 +44,42 @@ const pool = new Pool({
 });
 
 // -------------- SIGN-UP & SIGN-IN Routes --------------
+// app.post('/signup', async (req, res) => {
+//     const { username, password } = req.body;
+    
+//     try {
+//         const userCheckQuery = 'SELECT * FROM users WHERE username = $1';
+//         const userCheckResult = await pool.query(userCheckQuery, [username]);
+        
+//         if (userCheckResult.rows.length > 0) {
+//             return res.status(400).json({ message: 'Username already exists' });
+//         }
+
+//         const insertQuery = 'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *';
+//         const insertResult = await pool.query(insertQuery, [username, password]);
+        
+//         const newUser = insertResult.rows[0];
+//         console.log('Sign-up:', newUser);
+//         res.json({ message: 'User created', username: newUser.username });
+//     } catch (error) {
+//         console.error('Error during sign-up:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
 app.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
     
     try {
-        const userCheckQuery = 'SELECT * FROM users WHERE username = $1';
-        const userCheckResult = await pool.query(userCheckQuery, [username]);
-        
+        const userCheckQuery = 'SELECT * FROM users WHERE username = $1 OR email = $2';
+        const userCheckResult = await pool.query(userCheckQuery, [username, email]);
+
         if (userCheckResult.rows.length > 0) {
-            return res.status(400).json({ message: 'Username already exists' });
+            return res.status(400).json({ message: 'Username or email already exists' });
         }
 
-        const insertQuery = 'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *';
-        const insertResult = await pool.query(insertQuery, [username, password]);
-        
+        const insertQuery = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *';
+        const insertResult = await pool.query(insertQuery, [username, email, password]);
+
         const newUser = insertResult.rows[0];
         console.log('Sign-up:', newUser);
         res.json({ message: 'User created', username: newUser.username });
@@ -50,27 +89,115 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+
+// app.post('/signin', async (req, res) => {
+//     console.log('Sign-in Request Received');
+//     const { username, password } = req.body;
+    
+//     try {
+//         const userQuery = 'SELECT * FROM users WHERE username = $1 AND password = $2';
+//         const userResult = await pool.query(userQuery, [username, password]);
+        
+//         if (userResult.rows.length === 0) {
+//             return res.status(401).json({ message: 'Invalid credentials' });
+//         }
+
+//         const user = userResult.rows[0];
+//         console.log('Sign-in:', user);
+//         res.json({ token: 'dummy-token' });  // Replace with real token handling logic
+//     } catch (error) {
+//         console.error('Error during sign-in:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
+
+// app.post('/signin', async (req, res) => {
+//     const { usernameOrEmail, password } = req.body;
+    
+//     try {
+//         // Check if the provided username or email exists in the database
+//         const userCheckQuery = `
+//             SELECT * FROM users WHERE username = $1 OR email = $2
+//         `;
+//         const userCheckResult = await pool.query(userCheckQuery, [usernameOrEmail, usernameOrEmail]);
+        
+//         if (userCheckResult.rows.length === 0) {
+//             return res.status(400).json({ message: 'User not found' });
+//         }
+
+//         const user = userCheckResult.rows[0];
+
+//         // Verify password (assumes password is stored securely)
+//         if (user.password !== password) {
+//             return res.status(400).json({ message: 'Incorrect password' });
+//         }
+
+//         console.log('Sign-in:', user);
+//         res.json({ message: 'Sign-in successful', username: user.username });
+//     } catch (error) {
+//         console.error('Error during sign-in:', error);
+//         res.status(500).json({ message: 'Internal server error' });
+//     }
+// });
+
 app.post('/signin', async (req, res) => {
-    console.log('Sign-in Request Received');
-    const { username, password } = req.body;
+    const { usernameOrEmail, password } = req.body;
     
     try {
-        const userQuery = 'SELECT * FROM users WHERE username = $1 AND password = $2';
-        const userResult = await pool.query(userQuery, [username, password]);
+        // Check if the provided username or email exists in the database
+        const userCheckQuery = `
+            SELECT * FROM users WHERE username = $1 OR email = $2
+        `;
+        const userCheckResult = await pool.query(userCheckQuery, [usernameOrEmail, usernameOrEmail]);
         
-        if (userResult.rows.length === 0) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        if (userCheckResult.rows.length === 0) {
+            return res.status(400).json({ message: 'User not found' });
         }
 
-        const user = userResult.rows[0];
+        const user = userCheckResult.rows[0];
+
+        // Verify password (assumes password is stored securely)
+        if (user.password !== password) {
+            return res.status(400).json({ message: 'Incorrect password' });
+        }
+
         console.log('Sign-in:', user);
-        res.json({ token: 'dummy-token' });  // Replace with real token handling logic
+
+        // Send a greeting email to the user
+        var transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            service: "gmail",
+            auth: {
+                user: "mittapallibharathkumar2005@gmail.com",
+                pass: "kmnbisrgbyoqonyu",  // Make sure to replace with app-specific password
+            },
+            port: 465,
+            secure: true,
+            connectionTimeout: 10000,
+            greetingTimeout: 10000,
+        });
+
+        var mailOptions = {
+            from: "mittapallibharathkumar2005@gmail.com",
+            to: user.email,  // Send the email to the user's email address
+            subject: "Welcome to TravelEasy!",
+            text: `Hello ${user.username},\n\nWelcome to TravelEasy, where your next adventure is just a click away! We're thrilled to have you as part of our community. Whether you're planning your dream vacation or exploring new destinations, TravelEasy is here to make your journey seamless and unforgettable.\nThank you for choosing TravelEasy – let’s start exploring!\n\nBest regards,\nThe TravelEasy Team`
+        };
+
+        transporter.sendMail(mailOptions, function (err, info) {
+            if (err) {
+                console.error("Error in sending mail: ", err);
+            } else {
+                console.log("Email sent successfully: ", info.response);
+            }
+        });
+
+        res.json({ message: 'Sign-in successful', username: user.username });
     } catch (error) {
         console.error('Error during sign-in:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
-
 
 // API Keys
 const genAI = new GoogleGenerativeAI("AIzaSyBBekBGy3SV5i44UBaJvXWIRT83iuH6kik");

@@ -1,28 +1,27 @@
-/* General body styling */
 body {
     font-family: Arial, sans-serif;
-    background-image: url('./chatbot.jpg'); /* Apply background image */
-    background-size: cover; /* Ensure the image covers the entire page */
-    background-position: center; /* Position the image in the center */
-    background-repeat: no-repeat; /* Don't repeat the image */
+    background-image: url('./chatbot.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat; 
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full height of the viewport */
-    overflow: hidden; /* Prevent scrolling on the background */
+    height: 100vh; 
+    overflow: hidden;
+    display: block; /* Change from flex to block for proper layout flow */
 }
 
-/* Container for the chatbot */
 #chatbot-container {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100%;
-    position: absolute; /* Full-screen placement */
+    height: calc(100vh - 56px); /* Adjust for the navbar height */
+    position: absolute;
+    top: 56px; /* Push the chatbot down below the navbar */
+    
 }
+
 
 /* Chatbot box */
 #chatbot {

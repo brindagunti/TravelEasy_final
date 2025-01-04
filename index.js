@@ -13,7 +13,8 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 const app = express();
 const port = 3000;  // Adjust the port if needed
 app.use(express.static(path.join(__dirname)));
-
+const NEWS_API_KEY = 'db50a9545dce449097eb04a0604d764c';
+const NEWS_API_URL = `https://newsapi.org/v2/everything?q=travel%20places&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
 
 // Middleware
 app.use(cors());
@@ -23,8 +24,8 @@ var transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     service: "gmail",
     auth: {
-        user: "mittapallibharathkumar2005@gmail.com",  // Your Gmail address
-        pass: "qutngbjqayjoxsxi",                      // Your Gmail app password
+        user: "noreply.traveleasy@gmail.com",  // Your Gmail address
+        pass: "dtljycjirumcpumz",                      // Your Gmail app password
     },
     port: 465,
     secure: true,
@@ -43,29 +44,6 @@ const pool = new Pool({
     port: 5432,
 });
 
-// -------------- SIGN-UP & SIGN-IN Routes --------------
-// app.post('/signup', async (req, res) => {
-//     const { username, password } = req.body;
-    
-//     try {
-//         const userCheckQuery = 'SELECT * FROM users WHERE username = $1';
-//         const userCheckResult = await pool.query(userCheckQuery, [username]);
-        
-//         if (userCheckResult.rows.length > 0) {
-//             return res.status(400).json({ message: 'Username already exists' });
-//         }
-
-//         const insertQuery = 'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *';
-//         const insertResult = await pool.query(insertQuery, [username, password]);
-        
-//         const newUser = insertResult.rows[0];
-//         console.log('Sign-up:', newUser);
-//         res.json({ message: 'User created', username: newUser.username });
-//     } catch (error) {
-//         console.error('Error during sign-up:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
     
@@ -89,56 +67,6 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-
-// app.post('/signin', async (req, res) => {
-//     console.log('Sign-in Request Received');
-//     const { username, password } = req.body;
-    
-//     try {
-//         const userQuery = 'SELECT * FROM users WHERE username = $1 AND password = $2';
-//         const userResult = await pool.query(userQuery, [username, password]);
-        
-//         if (userResult.rows.length === 0) {
-//             return res.status(401).json({ message: 'Invalid credentials' });
-//         }
-
-//         const user = userResult.rows[0];
-//         console.log('Sign-in:', user);
-//         res.json({ token: 'dummy-token' });  // Replace with real token handling logic
-//     } catch (error) {
-//         console.error('Error during sign-in:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
-
-// app.post('/signin', async (req, res) => {
-//     const { usernameOrEmail, password } = req.body;
-    
-//     try {
-//         // Check if the provided username or email exists in the database
-//         const userCheckQuery = `
-//             SELECT * FROM users WHERE username = $1 OR email = $2
-//         `;
-//         const userCheckResult = await pool.query(userCheckQuery, [usernameOrEmail, usernameOrEmail]);
-        
-//         if (userCheckResult.rows.length === 0) {
-//             return res.status(400).json({ message: 'User not found' });
-//         }
-
-//         const user = userCheckResult.rows[0];
-
-//         // Verify password (assumes password is stored securely)
-//         if (user.password !== password) {
-//             return res.status(400).json({ message: 'Incorrect password' });
-//         }
-
-//         console.log('Sign-in:', user);
-//         res.json({ message: 'Sign-in successful', username: user.username });
-//     } catch (error) {
-//         console.error('Error during sign-in:', error);
-//         res.status(500).json({ message: 'Internal server error' });
-//     }
-// });
 
 app.post('/signin', async (req, res) => {
     const { usernameOrEmail, password } = req.body;
@@ -337,7 +265,28 @@ app.get('/api/blogs', async (req, res) => {
 });
   // Static route for serving uploaded images
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-  
+
+app.get('/api/travel-news', async (req, res) => {
+    const query = req.query.query || 'travel';
+    const NEWS_API_URL = `https://newsapi.org/v2/everything?q=${query}&language=en&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
+
+    try {
+        const response = await axios.get(NEWS_API_URL);
+
+        // ✅ Remove articles without images
+        const filteredArticles = response.data.articles.filter(article => article.urlToImage);
+        
+        if (filteredArticles.length === 0) {
+            return res.status(404).json({ error: "No articles with images found" });
+        }
+
+        res.json(filteredArticles);
+    } catch (error) {
+        console.error('Error fetching news:', error.message);
+        res.status(500).json({ error: 'Failed to fetch news. Please try again later.' });
+    }
+});
+
   // -------------- Start the Server --------------
   app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);

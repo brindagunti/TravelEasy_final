@@ -26,7 +26,7 @@ body {
 /* Chatbot box */
 #chatbot {
     width: 600px; /* Wider width for better readability */
-    height: 700px; /* Increased height for more space */
+    height: 600px; /* Increased height for more space */
     background-color: rgba(255, 255, 255, 0.9); /* Slight transparency for the background */
     border: 1px solid #ccc;
     border-radius: 12px; /* Slightly rounded corners */
@@ -61,7 +61,8 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: 10px;
+    margin:10px;
     overflow: hidden; /* Prevent overflow of messages */
     background-color: #f9f9f9; /* Light background for contrast */
 }

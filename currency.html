@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Currency Converter</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 400px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      .form-group {
+        margin: 15px 0;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #result {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 18px;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container">
+      <h1>Currency Converter</h1>
+      <form id="currencyForm">
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input type="number" id="amount" value="1" required />
+        </div>
+        <div class="form-group">
+          <label for="base">From</label>
+          <select id="base">
+            <!-- Dropdown will be populated dynamically -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="target">To</label>
+          <select id="target">
+            <!-- Dropdown will be populated dynamically -->
+          </select>
+        </div>
+        <button type="submit">Convert</button>
+      </form>
+
+      <h3 id="result">Converted Amount:</h3>
+    </div>
+
+    <script>
+      // Fetch the list of currencies from the server
+      async function loadCurrencies() {
+        try {
+          // Fetching exchange rates from the API
+          const response = await fetch(
+            "https://api.exchangerate-api.com/v4/latest/USD"
+          );
+          const data = await response.json();
+          console.log(data);
+          const currencies = Object.keys(data.rates); // Get all the currency codes
+          console.log(currencies); // Get all the currencies
+          const baseSelect = document.getElementById("base");
+          const targetSelect = document.getElementById("target");
+
+          // Populate the dropdowns with currency options
+          currencies.forEach((currency) => {
+            const optionBase = document.createElement("option");
+            optionBase.value = currency;
+            optionBase.textContent = currency;
+            // console.log(optionBase);
+            baseSelect.appendChild(optionBase);
+
+            const optionTarget = document.createElement("option");
+            optionTarget.value = currency;
+            optionTarget.textContent = currency;
+            targetSelect.appendChild(optionTarget);
+          });
+        } catch (error) {
+          console.error("Error loading currencies", error);
+        }
+      }
+
+      // Event listener for the form submission
+      document
+        .getElementById("currencyForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const amount = document.getElementById("amount").value;
+          const base = document.getElementById("base").value;
+          const target = document.getElementById("target").value;
+
+          try {
+            // Fetch exchange rates from the API again for conversion
+            const response = await fetch(
+              "https://api.exchangerate-api.com/v4/latest/USD"
+            );
+            const data = await response.json();
+
+            // Get the base and target rates from the API response
+            const baseRate = data.rates[base];
+            const targetRate = data.rates[target];
+
+            // Perform the conversion logic
+            const convertedAmount = ((amount * targetRate) / baseRate).toFixed(
+              2
+            );
+
+            // Update the result on the page
+            document.getElementById(
+              "result"
+            ).textContent = `Converted Amount: ${convertedAmount} ${target}`;
+          } catch (error) {
+            // Handle errors
+            document.getElementById("result").textContent =
+              "Error converting currency";
+            console.error("Error:", error);
+          }
+        });
+
+      // Load currencies on page load
+      loadCurrencies();
+    </script>
+  </body>
+</html>

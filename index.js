@@ -142,27 +142,33 @@ app.use(bodyParser.json());
 
 // Helper function to fetch weather data
 async function getWeather(city) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openWeatherApiKey}&units=metric`;
     try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            return `The current weather in ${data.name} is ${data.weather[0].description} with a temperature of ${data.main.temp}°C.`;
+        // Example using OpenWeatherMap API (replace with your preferred API)
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=YOUR_API_KEY`);
+        const data = await response.json();
+        if (data.weather) {
+            return `The weather in ${city} is ${data.weather[0].description}.`;
         } else {
-            return `Unable to fetch weather for "${city}". Please make sure the city name is correct.`;
+            return `Sorry, I couldn't find weather information for ${city}.`;
         }
     } catch (error) {
-        console.error('Error fetching weather data:', error);
-        return 'Error fetching weather data. Please try again later.';
+        console.error("Error fetching weather data:", error);
+        return "Error fetching weather information.";
     }
 }
 
 // Chatbot route to handle messages
+// Improved code for handling Gemini API response
+// Handling Gemini API response with detailed error logging
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
 
     try {
-        // Check if the user is asking about weather
+        if (!userMessage) {
+            return res.status(400).json({ reply: "Message cannot be empty." });
+        }
+
+        // Weather Handling Block
         if (userMessage.toLowerCase().includes('weather')) {
             const cityMatch = userMessage.match(/weather in (\w+)/i);
             if (cityMatch) {
@@ -174,15 +180,33 @@ app.post('/chat', async (req, res) => {
             }
         }
 
-        // If not weather-related, generate a response using Gemini
+        // Gemini API Response Handling
         const result = await model.generateContent(userMessage);
-        const botResponse = result.response.text();
-        res.json({ reply: botResponse });
+        console.log('Full Gemini API Response:', JSON.stringify(result, null, 2));
+
+        const candidate = result?.response?.candidates?.[0];
+        let botResponse = candidate?.content?.parts?.[0]?.text;
+        if (botResponse) {
+            // ✅ Beautify the response with proper formatting
+            botResponse = botResponse
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text using HTML <strong>
+                .replace(/\n/g, '<br>')                           // Convert line breaks to <br> tags
+                .replace(/\*/g, '• ');                           // Convert * to bullet points
+
+            return res.json({ reply: botResponse });
+        }
+
+
+        throw new Error('Invalid response structure from Gemini API.');
+
     } catch (error) {
-        console.error('Error generating response:', error);
+        console.error('Error generating response:', error.message);
         res.status(500).json({ reply: 'Sorry, I encountered an error. Please try again.' });
     }
 });
+
+
+
 
 
 

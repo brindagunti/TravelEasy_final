@@ -127,6 +127,8 @@ app.post('/signin', async (req, res) => {
     }
 });
 
+//chatbot 
+
 // API Keys
 const genAI = new GoogleGenerativeAI("AIzaSyBBekBGy3SV5i44UBaJvXWIRT83iuH6kik");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -142,27 +144,30 @@ app.use(bodyParser.json());
 
 // Helper function to fetch weather data
 async function getWeather(city) {
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${openWeatherApiKey}&units=metric`;
     try {
-        const response = await fetch(url);
-        if (response.ok) {
-            const data = await response.json();
-            return `The current weather in ${data.name} is ${data.weather[0].description} with a temperature of ${data.main.temp}°C.`;
+        // Example using OpenWeatherMap API (replace with your preferred API)
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=YOUR_API_KEY`);
+        const data = await response.json();
+        if (data.weather) {
+            return `The weather in ${city} is ${data.weather[0].description}.`;
         } else {
-            return `Unable to fetch weather for "${city}". Please make sure the city name is correct.`;
+            return `Sorry, I couldn't find weather information for ${city}.`;
         }
     } catch (error) {
-        console.error('Error fetching weather data:', error);
-        return 'Error fetching weather data. Please try again later.';
+        console.error("Error fetching weather data:", error);
+        return "Error fetching weather information.";
     }
 }
 
-// Chatbot route to handle messages
 app.post('/chat', async (req, res) => {
     const userMessage = req.body.message;
 
     try {
-        // Check if the user is asking about weather
+        if (!userMessage) {
+            return res.status(400).json({ reply: "Message cannot be empty." });
+        }
+
+        // Weather Handling Block
         if (userMessage.toLowerCase().includes('weather')) {
             const cityMatch = userMessage.match(/weather in (\w+)/i);
             if (cityMatch) {
@@ -174,15 +179,37 @@ app.post('/chat', async (req, res) => {
             }
         }
 
-        // If not weather-related, generate a response using Gemini
         const result = await model.generateContent(userMessage);
-        const botResponse = result.response.text();
-        res.json({ reply: botResponse });
+        console.log('Full Gemini API Response:', JSON.stringify(result, null, 2));
+
+        const candidate = result?.response?.candidates?.[0];
+let botResponse = candidate?.content?.parts?.[0]?.text;
+
+if (botResponse) {
+
+    botResponse = botResponse
+        .replace(/^(.+):$/gm, '<h4>$1</h4>')              
+        .replace(/^\*\s(.+)$/gm, '<li>$1</li>')            
+        .replace(/(?:<\/li>\n)+/g, '</li>')               
+        .replace(/\n\n+/g, '</ul><ul>')                
+        .replace(/^(?!<b>|<\/?ul>|<\/?li>)(.+)$/gm, '<p>$1</p>') 
+        .replace(/<\/b>\s*(?!<ul>)/g, '</b><ul>');       
+
+    // Wrap the entire response in a container
+    botResponse = `<div>${botResponse}</div>`;
+    return res.json({ reply: botResponse });
+}
+
+        throw new Error('Invalid response structure from Gemini API.');
+
     } catch (error) {
-        console.error('Error generating response:', error);
+        console.error('Error generating response:', error.message);
         res.status(500).json({ reply: 'Sorry, I encountered an error. Please try again.' });
     }
 });
+
+
+
 
 
 
@@ -198,17 +225,19 @@ const storage = multer.diskStorage({
   });
   
   const upload = multer({ storage: storage });
-app.post('/api/blogs', upload.single('image'), async (req, res) => {
+  app.post('/api/blogs', upload.single('image'), async (req, res) => {
     try {
-        const { description, user_id } = req.body; 
+        const { description, user_id } = req.body;
 
         if (!req.file) {
+            console.error('No file uploaded.');
             return res.status(400).send('No file uploaded.');
         }
 
-        const imagePath = `http://localhost:${port}/uploads/${req.file.filename}`;
+        console.log('File Uploaded:', req.file);
+        console.log('Request Body:', req.body);
 
-        // Insert blog and return created_at
+        const imagePath = `http://localhost:${port}/uploads/${req.file.filename}`;
         const query = `
             INSERT INTO blogs (user_id, description, image_url)
             VALUES ($1, $2, $3)
@@ -216,31 +245,23 @@ app.post('/api/blogs', upload.single('image'), async (req, res) => {
         `;
         const values = [user_id, description, imagePath];
         const result = await pool.query(query, values);
-        const newBlog = result.rows[0]; 
+        console.log('Insert Query Result:', result.rows);
 
-        // Get the username
         const userQuery = 'SELECT username FROM users WHERE id = $1';
         const userResult = await pool.query(userQuery, [user_id]);
-        const username = userResult.rows[0].username;
+        const username = userResult.rows[0]?.username;
+        console.log('User Query Result:', userResult.rows);
 
         res.status(201).send({
             message: 'Blog post created successfully!',
             blog: {
-                id: newBlog.id,
-                user_id: newBlog.user_id,
-                description: newBlog.description,
-                image_url: newBlog.image_url,
-                created_at: newBlog.created_at,
-                username, // Include username in the response
+                id: result.rows[0].id,
+                user_id: result.rows[0].user_id,
+                description: result.rows[0].description,
+                image_url: result.rows[0].image_url,
+                created_at: result.rows[0].created_at,
+                username,
             },
-        });
-        console.log('New blog response:', {
-            id: newBlog.id,
-            user_id: newBlog.user_id,
-            description: newBlog.description,
-            image_url: newBlog.image_url,
-            created_at: newBlog.created_at,
-            username,
         });
     } catch (err) {
         console.error('Error inserting blog into database:', err);
@@ -248,7 +269,7 @@ app.post('/api/blogs', upload.single('image'), async (req, res) => {
     }
 });
 
-// In your /api/blogs GET endpoint
+
 app.get('/api/blogs', async (req, res) => {
     try {
         const result = await pool.query(`
@@ -263,9 +284,10 @@ app.get('/api/blogs', async (req, res) => {
         res.status(500).send('Server Error: ' + err.message);
     }
 });
-  // Static route for serving uploaded images
+
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+  //News 
 app.get('/api/travel-news', async (req, res) => {
     const query = req.query.query || 'travel';
     const NEWS_API_URL = `https://newsapi.org/v2/everything?q=${query}&language=en&sortBy=publishedAt&apiKey=${NEWS_API_KEY}`;
@@ -273,7 +295,6 @@ app.get('/api/travel-news', async (req, res) => {
     try {
         const response = await axios.get(NEWS_API_URL);
 
-        // ✅ Remove articles without images
         const filteredArticles = response.data.articles.filter(article => article.urlToImage);
         
         if (filteredArticles.length === 0) {
@@ -287,7 +308,7 @@ app.get('/api/travel-news', async (req, res) => {
     }
 });
 
-  // -------------- Start the Server --------------
+
   app.listen(port, () => {
       console.log(`Server running on http://localhost:${port}`);
   });

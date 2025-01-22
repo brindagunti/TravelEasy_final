@@ -35,30 +35,33 @@ document.getElementById('addCardBtn').addEventListener('click', async () => {
         console.error('Network error:', error);
     }
 });
+
+
 async function fetchBlogs() {
     try {
         const response = await fetch('http://localhost:3000/api/blogs');
         if (response.ok) {
-            const blogs = await response.json(); // Adjust if the backend nests results
-            const blogListHTML = blogs.map((blog) => {
-                const createdAt = new Date(blog.created_at || Date.now());
-                const date = createdAt.toLocaleDateString();
-                const time = createdAt.toLocaleTimeString();
+            const blogs = await response.json();
+            console.log('Fetched Blogs:', blogs); // Debug
+            const blogListHTML = blogs.map(blog => {
+                const createdDate = new Date(blog.created_at);
+                const formattedDate = createdDate.toLocaleString();
 
                 return `
                     <div class="blog-card col-md-4 mb-4">
-                        <img src="${blog.image_url}" class="card-img-top" alt="Blog Image" onerror="this.onerror=null; this.src='default-image.jpg';" />
-                        <div class="card-body">
-                            <p>${blog.description}</p>
-                            <p><strong>Posted by:</strong> ${blog.username || 'Unknown'}</p>
-                            <p><strong>Date:</strong> ${date}</p>
-                            <p><strong>Time:</strong> ${time}</p>
+                        <div class="card">
+                            <img src="${blog.image_url}" class="card-img-top" alt="Blog Image" onerror="this.onerror=null; this.src='default-image.jpg';" />
+                            <div class="card-body">
+                                <p class="card-text"><strong>Description:</strong> ${blog.description}</p>
+                                <p class="card-text"><strong>Posted by:</strong> ${blog.username}</p>
+                                <p class="card-text"><strong>Date:</strong> ${formattedDate}</p>
+                            </div>
                         </div>
                     </div>
                 `;
             }).join('');
 
-            document.getElementById('blog-list').innerHTML = blogListHTML;
+            document.getElementById('blog-list').innerHTML = blogListHTML; // Populate the blog list
         } else {
             console.error('Error fetching blogs:', await response.text());
         }
@@ -67,31 +70,31 @@ async function fetchBlogs() {
     }
 }
 
-
-document.addEventListener('DOMContentLoaded', fetchBlogs);
-
 function addCardToPage(blog) {
-    console.log('Blog Data:', blog); // Debugging line to inspect data
-
     const cardContainer = document.getElementById('card-container');
     const card = document.createElement('div');
     card.classList.add('col-md-4', 'mb-4');
 
-    const createdAt = new Date(blog.created_at || Date.now()); // Fallback to current date if `created_at` is missing
-    const date = createdAt.toLocaleDateString();
-    const time = createdAt.toLocaleTimeString();
+    const createdDate = new Date(blog.created_at);
+    const formattedDate = createdDate.toLocaleString();
 
     card.innerHTML = `
         <div class="card">
             <img src="${blog.image_url}" class="card-img-top" alt="Blog Image" onerror="this.onerror=null; this.src='default-image.jpg';" />
             <div class="card-body">
-                <p class="card-text">${blog.description}</p>
-                <p class="text-muted">Posted by: ${blog.username || 'Unknown'}</p>
-                <p class="text-muted">On: ${date} at ${time}</p>
+                <p class="card-text"><strong>Description:</strong> ${blog.description}</p>
+                <p class="card-text"><strong>Posted by:</strong> ${blog.username}</p>
+                <p class="card-text"><strong>Date:</strong> ${formattedDate}</p>
             </div>
         </div>
     `;
 
     cardContainer.appendChild(card);
 }
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchBlogs(); // Fetch blogs on page load
+});
 

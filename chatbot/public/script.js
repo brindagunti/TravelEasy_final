@@ -1,32 +1,39 @@
-// script.js
-
-// Add event listener to the home button
-document.getElementById('home-btn').addEventListener('click', () => {
-    // Redirect to the home.html page
-    window.location.href = '/Home.html'; // This will redirect to home.html
-});
-
-
+// Ensure the DOM is fully loaded before accessing elements
 document.addEventListener('DOMContentLoaded', () => {
+    // Home button event listener with null check
+    const homeButton = document.getElementById('home-btn');
+    if (homeButton) {
+        homeButton.addEventListener('click', () => {
+            window.location.href = '/Home.html'; // Redirects to home.html
+        });
+    }
+
+    // Chat functionalities
     const chatInput = document.getElementById('chat-input');
     const chatMessages = document.getElementById('chat-messages');
     const sendBtn = document.getElementById('send-btn');
 
-    sendBtn.addEventListener('click', async () => {
-        const userMessage = chatInput.value.trim();
-        if (userMessage) {
-            displayMessage(userMessage, 'user');
-            chatInput.value = ''; // Clear the input field
+    // Prevents error if elements are missing
+    if (sendBtn && chatInput && chatMessages) {
+        sendBtn.addEventListener('click', async () => {
+            const userMessage = chatInput.value.trim();
+            if (userMessage) {
+                displayMessage(userMessage, 'user');
+                chatInput.value = ''; // Clear the input field
 
-            // Get bot response from the server
-            const botResponse = await getBotResponse(userMessage);
-            displayMessage(botResponse, 'bot');
-        }
-    });
+                // Get bot response from the server
+                const botResponse = await getBotResponse(userMessage);
+                displayMessage(botResponse, 'bot');
+            }
+        });
+    } else {
+        console.error("Some chat elements were not found in the DOM.");
+    }
 
+    // Fetch bot response from server
     async function getBotResponse(message) {
         try {
-            const response = await fetch('http://localhost:3000/chat', { 
+            const response = await fetch('http://localhost:3000/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -46,11 +53,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Display message in chatbox
     function displayMessage(message, sender) {
         const messageDiv = document.createElement('div');
         messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
-        messageDiv.textContent = message;
+    
+        // Render HTML content for bot responses
+        if (sender === 'bot') {
+            messageDiv.innerHTML = message;
+        } else {
+            messageDiv.textContent = message;
+        }
+    
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to the latest message
     }
+    
+    
 });

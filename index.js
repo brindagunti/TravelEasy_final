@@ -7,6 +7,8 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const axios = require('axios');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 // Initialize the app
@@ -46,8 +48,9 @@ const pool = new Pool({
 
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
-    
+
     try {
+        // Check if user exists
         const userCheckQuery = 'SELECT * FROM users WHERE username = $1 OR email = $2';
         const userCheckResult = await pool.query(userCheckQuery, [username, email]);
 
@@ -55,12 +58,21 @@ app.post('/signup', async (req, res) => {
             return res.status(400).json({ message: 'Username or email already exists' });
         }
 
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Insert user into the database
         const insertQuery = 'INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *';
-        const insertResult = await pool.query(insertQuery, [username, email, password]);
+        const insertResult = await pool.query(insertQuery, [username, email, hashedPassword]);
 
         const newUser = insertResult.rows[0];
-        console.log('Sign-up:', newUser);
-        res.json({ message: 'User created', username: newUser.username });
+
+        // Generate JWT token
+        
+        const token = jwt.sign({ id: newUser.id, username: newUser.username },process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        console.log('Sign-up successful:', newUser);
+        res.json({ message: 'User created', token, username: newUser.username });
     } catch (error) {
         console.error('Error during sign-up:', error);
         res.status(500).json({ message: 'Internal server error' });
@@ -68,64 +80,40 @@ app.post('/signup', async (req, res) => {
 });
 
 
+// POST route for user sign-in
+async function findUser(usernameOrEmail) {
+    const query = 'SELECT * FROM users WHERE username = $1 OR email = $2';
+    const result = await pool.query(query, [usernameOrEmail, usernameOrEmail]);
+    return result.rows[0]; // Return the user object if found
+}
 app.post('/signin', async (req, res) => {
     const { usernameOrEmail, password } = req.body;
     
     try {
-        // Check if the provided username or email exists in the database
-        const userCheckQuery = `
-            SELECT * FROM users WHERE username = $1 OR email = $2
-        `;
-        const userCheckResult = await pool.query(userCheckQuery, [usernameOrEmail, usernameOrEmail]);
-        
-        if (userCheckResult.rows.length === 0) {
-            return res.status(400).json({ message: 'User not found' });
+        // Assuming findUser() fetches the user from your database
+        const user = await findUser(usernameOrEmail);
+
+        if (user && await bcrypt.compare(password, user.password)) {
+            // const token = jwt.sign({ id: user.id, username: user.username }, 'your_secret_key', { expiresIn: '1h' });
+            const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+            console.log('Token being signed:', token); // In /signup and /signin
+
+            
+            res.json({ message: 'Signin successful', token, username: user.username });
+        } else {
+            res.status(400).json({ message: 'Invalid credentials' });
         }
-
-        const user = userCheckResult.rows[0];
-
-        // Verify password (assumes password is stored securely)
-        if (user.password !== password) {
-            return res.status(400).json({ message: 'Incorrect password' });
-        }
-
-        console.log('Sign-in:', user);
-
-        // Send a greeting email to the user
-        var transporter = nodemailer.createTransport({
-            host: "smtp.gmail.com",
-            service: "gmail",
-            auth: {
-                user: "mittapallibharathkumar2005@gmail.com",
-                pass: "kmnbisrgbyoqonyu",  // Make sure to replace with app-specific password
-            },
-            port: 465,
-            secure: true,
-            connectionTimeout: 10000,
-            greetingTimeout: 10000,
-        });
-
-        var mailOptions = {
-            from: "mittapallibharathkumar2005@gmail.com",
-            to: user.email,  // Send the email to the user's email address
-            subject: "Welcome to TravelEasy!",
-            text: `Hello ${user.username},\n\nWelcome to TravelEasy, where your next adventure is just a click away! We're thrilled to have you as part of our community. Whether you're planning your dream vacation or exploring new destinations, TravelEasy is here to make your journey seamless and unforgettable.\nThank you for choosing TravelEasy – let’s start exploring!\n\nBest regards,\nThe TravelEasy Team`
-        };
-
-        transporter.sendMail(mailOptions, function (err, info) {
-            if (err) {
-                console.error("Error in sending mail: ", err);
-            } else {
-                console.log("Email sent successfully: ", info.response);
-            }
-        });
-
-        res.json({ message: 'Sign-in successful', username: user.username });
     } catch (error) {
         console.error('Error during sign-in:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+
+
+
+
+
+
 
 //chatbot 
 
@@ -214,20 +202,100 @@ if (botResponse) {
 
 
 
+// // -------------- BLOG POSTS UPLOADS --------------
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//       cb(null, path.join(__dirname, './uploads/'));  // Save files in the /uploads directory
+//     },
+//     filename: (req, file, cb) => {
+//       cb(null, Date.now() + path.extname(file.originalname));  // Save with a timestamp and original extension
+//     }
+//   });
+  
+//   const upload = multer({ storage: storage });
+//   app.post('/api/blogs', upload.single('image'), async (req, res) => {
+//     try {
+//         const { description, user_id } = req.body;
+
+//         if (!req.file) {
+//             console.error('No file uploaded.');
+//             return res.status(400).send('No file uploaded.');
+//         }
+
+//         console.log('File Uploaded:', req.file);
+//         console.log('Request Body:', req.body);
+
+//         const imagePath = `http://localhost:${port}/uploads/${req.file.filename}`;
+//         const query = `
+//             INSERT INTO blogs (user_id, description, image_url)
+//             VALUES ($1, $2, $3)
+//             RETURNING id, description, image_url, user_id, created_at
+//         `;
+//         const values = [user_id, description, imagePath];
+//         const result = await pool.query(query, values);
+//         console.log('Insert Query Result:', result.rows);
+
+//         const userQuery = 'SELECT username FROM users WHERE id = $1';
+//         const userResult = await pool.query(userQuery, [user_id]);
+//         const username = userResult.rows[0]?.username;
+//         console.log('User Query Result:', userResult.rows);
+
+//         res.status(201).send({
+//             message: 'Blog post created successfully!',
+//             blog: {
+//                 id: result.rows[0].id,
+//                 user_id: result.rows[0].user_id,
+//                 description: result.rows[0].description,
+//                 image_url: result.rows[0].image_url,
+//                 created_at: result.rows[0].created_at,
+//                 username,
+//             },
+//         });
+//     } catch (err) {
+//         console.error('Error inserting blog into database:', err);
+//         res.status(500).send('Server Error: ' + err.message);
+//     }
+// });
+
+
+// app.get('/api/blogs', async (req, res) => {
+//     try {
+//         const result = await pool.query(`
+//             SELECT blogs.id, blogs.description, blogs.image_url, users.username, blogs.created_at
+//             FROM blogs
+//             JOIN users ON blogs.user_id = users.id
+//             ORDER BY blogs.id DESC
+//         `);
+//         res.status(200).send(result.rows);
+//     } catch (err) {
+//         console.error('Error fetching blogs from database:', err);
+//         res.status(500).send('Server Error: ' + err.message);
+//     }
+// });
+
+//   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // -------------- BLOG POSTS UPLOADS --------------
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, path.join(__dirname, './uploads/'));  // Save files in the /uploads directory
+        cb(null, path.join(__dirname, './uploads/')); // Save files in the /uploads directory
     },
     filename: (req, file, cb) => {
-      cb(null, Date.now() + path.extname(file.originalname));  // Save with a timestamp and original extension
+        cb(null, Date.now() + path.extname(file.originalname)); // Save with a timestamp and original extension
     }
-  });
-  
-  const upload = multer({ storage: storage });
-  app.post('/api/blogs', upload.single('image'), async (req, res) => {
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware to secure routes
+const authenticate = require('./authMiddleware'); // Ensure this points to your middleware file
+
+// Secure route for creating a new blog post
+app.post('/api/blogs', authenticate, upload.single('image'), async (req, res)   => {
+    console.log('POST /api/blogs route hit');
     try {
-        const { description, user_id } = req.body;
+        const { description } = req.body;
+        const user_id = req.user.id; // Extract user ID from the authenticated token
 
         if (!req.file) {
             console.error('No file uploaded.');
@@ -247,11 +315,6 @@ const storage = multer.diskStorage({
         const result = await pool.query(query, values);
         console.log('Insert Query Result:', result.rows);
 
-        const userQuery = 'SELECT username FROM users WHERE id = $1';
-        const userResult = await pool.query(userQuery, [user_id]);
-        const username = userResult.rows[0]?.username;
-        console.log('User Query Result:', userResult.rows);
-
         res.status(201).send({
             message: 'Blog post created successfully!',
             blog: {
@@ -260,7 +323,7 @@ const storage = multer.diskStorage({
                 description: result.rows[0].description,
                 image_url: result.rows[0].image_url,
                 created_at: result.rows[0].created_at,
-                username,
+                username: req.user.username, // Retrieve username from the token
             },
         });
     } catch (err) {
@@ -269,8 +332,8 @@ const storage = multer.diskStorage({
     }
 });
 
-
-app.get('/api/blogs', async (req, res) => {
+// Secure route for fetching all blog posts
+app.get('/api/blogs', authenticate, async (req, res) => {
     try {
         const result = await pool.query(`
             SELECT blogs.id, blogs.description, blogs.image_url, users.username, blogs.created_at
@@ -285,7 +348,9 @@ app.get('/api/blogs', async (req, res) => {
     }
 });
 
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
   //News 
 app.get('/api/travel-news', async (req, res) => {

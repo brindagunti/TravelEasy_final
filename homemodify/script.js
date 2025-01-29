@@ -113,7 +113,7 @@ function displayPlaces(groupedData) {
 
   // Function to create a container for place cards
   function createCountryContainer(title, places) {
-    if (places.length <= 2) {
+    if (places.length <= 3) {
       return;
     }
     const countryContainer = document.createElement("div");

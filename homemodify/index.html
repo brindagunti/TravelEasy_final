@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Places Explorer</title>
     <style>
-      .bb {
+      body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 0;
@@ -16,7 +16,7 @@
         padding: 20px;
       }
 
-      #bb h3 {
+      h3 {
         margin: 20px 0 10px;
         font-size: 24px;
         color: #333;
@@ -45,6 +45,7 @@
         flex: 0 0 auto;
         background-color: #fff;
         transition: box-shadow 0.3s ease;
+        cursor: pointer;
       }
 
       .place-card:hover {
@@ -53,13 +54,13 @@
 
       .place-card img {
         width: 100%;
-        height: auto;
+        height: 250px;
         border-radius: 5px;
         transition: transform 0.3s ease;
       }
 
       .place-card:hover img {
-        transform: scale(1.2);
+        transform: scale(1.1);
       }
 
       .place-card h4 {
@@ -85,13 +86,22 @@
       }
 
       .place-card:hover .description {
-        display: block;
-        transform: scale(1.1);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: calc(1.5em * 2);
+        -webkit-line-clamp: 2;
+        height: calc(1.5em * 2);
+        transform: scale(1.05);
+      }
+      a {
+        text-decoration: none;
       }
     </style>
   </head>
   <body>
-    <div class="bb"><div id="placesContainer"></div></div>
+    <div id="placesContainer"></div>
 
     <script type="module" src="./script.js"></script>
   </body>

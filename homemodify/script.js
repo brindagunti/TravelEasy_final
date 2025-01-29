@@ -1,68 +1,3 @@
-// import italyPlaces from "./italy.js";
-// import russiaPlaces from "./russia.js";
-// import indiaPlaces from "./places.js";
-
-// // Combine all places into a single array
-// const data = [...italyPlaces, ...russiaPlaces, ...indiaPlaces];
-
-// // Group places by country
-// const groupedPlaces = data.reduce((acc, place) => {
-//   if (!acc[place.country]) {
-//     acc[place.country] = [];
-//   }
-//   acc[place.country].push(place);
-//   return acc;
-// }, {});
-
-// // Function to display the grouped places in the HTML
-// function displayPlaces(groupedData) {
-//   const placesContainer = document.getElementById("placesContainer");
-
-//   for (const country in groupedData) {
-//     // Create a header for the country
-//     const countryHeader = document.createElement("h3");
-//     countryHeader.textContent = country.toUpperCase();
-//     placesContainer.appendChild(countryHeader);
-
-//     // Create a container for the country's places
-//     const countryContainer = document.createElement("div");
-//     countryContainer.classList.add("country-container");
-
-//     groupedData[country].forEach((place) => {
-//       // Create a place card
-//       const placeCard = document.createElement("div");
-//       placeCard.classList.add("place-card");
-
-//       // Place image
-//       const img = document.createElement("img");
-//       img.src = place.image;
-//       img.alt = place.name;
-
-//       // Place name
-//       const name = document.createElement("h4");
-//       name.textContent = place.name;
-
-//       // Place description
-//       const desc = document.createElement("div");
-//       desc.classList.add("description");
-//       desc.textContent = place.desc;
-
-//       // Append elements to the card
-//       placeCard.appendChild(img);
-//       placeCard.appendChild(name);
-//       placeCard.appendChild(desc);
-
-//       // Append card to the country container
-//       countryContainer.appendChild(placeCard);
-//     });
-
-//     // Append the country's container to the main container
-//     placesContainer.appendChild(countryContainer);
-//   }
-// }
-
-// // Call the function to display places on page load
-// window.onload = () => displayPlaces(groupedPlaces);
 import italyPlaces from "./italy.js";
 import russiaPlaces from "./russia.js";
 import indiaPlaces from "./places.js";
@@ -113,7 +48,7 @@ function displayPlaces(groupedData) {
 
   // Function to create a container for place cards
   function createCountryContainer(title, places) {
-    if (places.length <= 3) {
+    if (places.length <= 2) {
       return;
     }
     const countryContainer = document.createElement("div");
@@ -124,6 +59,12 @@ function displayPlaces(groupedData) {
     placesContainer.appendChild(countryHeader);
 
     places.forEach((place) => {
+      const link = document.createElement("a");
+      // link.href = "https://www.youtube.com/results?search_query=" + place.name;
+      // const jsonData = encodeURIComponent(JSON.stringify(place));
+      link.href = "specific.html?placeid=" + place.id;
+      link.target = "_self";
+
       const placeCard = document.createElement("div");
       placeCard.classList.add("place-card");
 
@@ -141,7 +82,8 @@ function displayPlaces(groupedData) {
       placeCard.appendChild(img);
       placeCard.appendChild(name);
       placeCard.appendChild(desc);
-      countryContainer.appendChild(placeCard);
+      link.appendChild(placeCard);
+      countryContainer.appendChild(link);
     });
 
     placesContainer.appendChild(countryContainer);

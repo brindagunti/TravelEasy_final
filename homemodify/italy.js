@@ -1,3 +1,108 @@
+// const it = [
+//   {
+//     id: 1,
+//     name: "Colosseum",
+//     country: "Italy",
+//     category: "Architecture",
+//     tags: ["ancient", "amphitheater", "Rome"],
+//     image:
+//       "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1996&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+//     desc: "The Colosseum, also known as the Flavian Amphitheatre, is an iconic symbol of Rome. It was built in AD 70-80 and could hold up to 80,000 spectators for gladiatorial contests and public spectacles.",
+//     similarPlaces: ["Vatican City", "Florence", "Pompeii"], // Added similar places
+//   },
+//   {
+//     id: 52,
+//     name: "Vatican City",
+//     country: "Italy",
+//     category: "Religion",
+//     tags: ["papal", "museums", "Sistine Chapel"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "Vatican City is the smallest independent state in the world and serves as the spiritual center for the Roman Catholic Church. It is home to St. Peter's Basilica and the Sistine Chapel, famous for Michelangelo's ceiling.",
+//     similarPlaces: ["Colosseum", "Florence", "Amalfi Coast"], // Added similar places
+//   },
+//   {
+//     id: 3,
+//     name: "Florence",
+//     country: "Italy",
+//     category: "Culture",
+//     tags: ["Renaissance", "art", "Duomo"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "Florence is known as the birthplace of the Renaissance and is famous for its art, architecture, and cultural heritage. The Florence Cathedral, with its iconic dome designed by Brunelleschi, dominates the skyline.",
+//     similarPlaces: ["Venice", "Tuscany", "Pisa"], // Added similar places
+//   },
+//   {
+//     id: 4,
+//     name: "Venice",
+//     country: "Italy",
+//     category: "Adventure",
+//     tags: ["canals", "gondolas", "Grand Canal"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "Venice is a unique city built on a network of canals and is renowned for its beautiful architecture and romantic gondola rides. The Grand Canal is lined with stunning palaces and historic buildings.",
+//     similarPlaces: ["Florence", "Amalfi Coast", "Cinque Terre"], // Added similar places
+//   },
+//   {
+//     id: 5,
+//     name: "Amalfi Coast",
+//     country: "Italy",
+//     category: "Nature",
+//     tags: ["coastal", "scenic", "UNESCO"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "The Amalfi Coast is a stunning stretch of coastline known for its picturesque villages, dramatic cliffs, and crystal-clear waters. It is a UNESCO World Heritage site and a popular destination for travelers.",
+//     similarPlaces: ["Cinque Terre", "Tuscany", "Pompeii"], // Added similar places
+//   },
+//   {
+//     id: 6,
+//     name: "Leaning Tower of Pisa",
+//     country: "Italy",
+//     category: "Architecture",
+//     tags: ["tower", "landmark", "Pisa"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "The Leaning Tower of Pisa is famous for its unintended tilt. Completed in the 14th century, this freestanding bell tower is part of the cathedral complex in Pisa and attracts millions of visitors each year.",
+//     similarPlaces: ["Florence", "Colosseum", "Venice"], // Added similar places
+//   },
+//   {
+//     id: 7,
+//     name: "Pompeii",
+//     country: "Italy",
+//     category: "History",
+//     tags: ["archaeological site", "volcano", "Naples"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "Pompeii was an ancient Roman city that was buried under volcanic ash from Mount Vesuvius in AD 79. The site provides insight into Roman life and has been remarkably preserved, making it a major archaeological site.",
+//     similarPlaces: ["Herculaneum", "Colosseum", "Amalfi Coast"], // Added similar places
+//   },
+//   {
+//     id: 8,
+//     name: "Cinque Terre",
+//     country: "Italy",
+//     category: "Nature",
+//     tags: ["coastal villages", "hiking"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "Cinque Terre consists of five charming coastal villages along the Italian Riviera. Known for their colorful houses and stunning sea views, these villages are popular for hiking and exploring picturesque landscapes.",
+//     similarPlaces: ["Amalfi Coast", "Venice", "Tuscany"], // Added similar places
+//   },
+//   {
+//     id: 9,
+//     name: "Tuscany",
+//     country: "Italy",
+//     category: "Nature",
+//     tags: ["vineyards", "countryside", "wine"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "Tuscany is famous for its rolling hills, vineyards, and olive groves. This region is known for producing some of Italy's finest wines and offers beautiful landscapes that have inspired artists for centuries.",
+//     similarPlaces: ["Florence", "Cinque Terre", "Leaning Tower of Pisa"], // Added similar places
+//   },
+//   {
+//     id: 10,
+//     name: "Duomo di Milano",
+//     country: "Italy",
+//     category: "Architecture",
+//     tags: ["cathedral", "Gothic", "Milan"],
+//     image: "https://dummyimage.com/600x400/000/fff",
+//     desc: "The Duomo di Milano is one of the largest cathedrals in Europe, known for its stunning Gothic architecture. Construction began in the late 14th century and features intricate sculptures and beautiful stained glass windows.",
+//     similarPlaces: ["Florence", "Vatican City", "Leaning Tower of Pisa"], // Added similar places
+//   },
+// ];
+
+// export default it;
 const it = [
   {
     id: 1,
@@ -5,17 +110,20 @@ const it = [
     country: "Italy",
     category: "Architecture",
     tags: ["ancient", "amphitheater", "Rome"],
-    image: "https://dummyimage.com/600x400/000/fff",
-    desc: "The Colosseum, also known as the Flavian Amphitheatre, is an iconic symbol of Rome. It was built in AD 70-80 and could hold up to 80,000 spectators for gladiatorial contests and public spectacles.",
+    image:
+      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=1996&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    desc: "The Colosseum, also known as the Flavian Amphitheatre, stands as an iconic symbol of Rome and its rich history. Constructed between AD 70 and 80, this monumental structure could accommodate up to 80,000 spectators who gathered to witness thrilling gladiatorial contests and various public spectacles that captivated audiences for centuries. Its architectural grandeur and engineering marvel continue to draw millions of visitors each year, making it a must-see destination for anyone exploring the eternal city.",
+    similarPlaces: ["Vatican City", "Florence", "Pompeii"],
   },
   {
-    id: 2,
+    id: 52,
     name: "Vatican City",
     country: "Italy",
     category: "Religion",
     tags: ["papal", "museums", "Sistine Chapel"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "Vatican City is the smallest independent state in the world and serves as the spiritual center for the Roman Catholic Church. It is home to St. Peter's Basilica and the Sistine Chapel, famous for Michelangelo's ceiling.",
+    desc: "Vatican City is the smallest independent state in the world, yet it holds immense significance as the spiritual center for the Roman Catholic Church. This remarkable enclave is home to St. Peter's Basilica, a breathtaking architectural masterpiece, and the Sistine Chapel, renowned for Michelangelo's stunning ceiling frescoes. Visitors flock to this sacred site to admire its artistic treasures and experience the profound spiritual atmosphere that permeates its hallowed grounds.",
+    similarPlaces: ["Colosseum", "Florence", "Amalfi Coast"],
   },
   {
     id: 3,
@@ -24,7 +132,8 @@ const it = [
     category: "Culture",
     tags: ["Renaissance", "art", "Duomo"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "Florence is known as the birthplace of the Renaissance and is famous for its art, architecture, and cultural heritage. The Florence Cathedral, with its iconic dome designed by Brunelleschi, dominates the skyline.",
+    desc: "Florence is celebrated as the birthplace of the Renaissance, a period that marked a profound transformation in art, culture, and human thought. This enchanting city is renowned for its extraordinary art collections, stunning architecture, and rich cultural heritage. The Florence Cathedral, with its iconic dome designed by Brunelleschi, dominates the skyline and serves as a testament to the city's artistic legacy. Visitors can explore world-class museums such as the Uffizi Gallery, which houses masterpieces by legendary artists like Botticelli and Leonardo da Vinci.",
+    similarPlaces: ["Venice", "Tuscany", "Pisa"],
   },
   {
     id: 4,
@@ -33,7 +142,8 @@ const it = [
     category: "Adventure",
     tags: ["canals", "gondolas", "Grand Canal"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "Venice is a unique city built on a network of canals and is renowned for its beautiful architecture and romantic gondola rides. The Grand Canal is lined with stunning palaces and historic buildings.",
+    desc: "Venice is a unique and captivating city built upon a network of picturesque canals, making it one of the most romantic destinations in the world. Renowned for its stunning architecture and charming gondola rides through serene waterways, Venice offers a magical experience that enchants every visitor. The Grand Canal serves as the city's main thoroughfare, lined with magnificent palaces and historic buildings that reflect its rich maritime history. Exploring Venice is like stepping into a living painting, where every corner reveals breathtaking views and hidden gems.",
+    similarPlaces: ["Florence", "Amalfi Coast", "Cinque Terre"],
   },
   {
     id: 5,
@@ -42,7 +152,8 @@ const it = [
     category: "Nature",
     tags: ["coastal", "scenic", "UNESCO"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "The Amalfi Coast is a stunning stretch of coastline known for its picturesque villages, dramatic cliffs, and crystal-clear waters. It is a UNESCO World Heritage site and a popular destination for travelers.",
+    desc: "The Amalfi Coast is a breathtaking stretch of coastline that captivates travelers with its stunning natural beauty and picturesque villages perched on dramatic cliffs overlooking the azure Mediterranean Sea. Known for its charming towns like Positano and Ravello, this UNESCO World Heritage site offers visitors an unforgettable experience filled with scenic views, delicious cuisine, and vibrant local culture. The coastal landscape features terraced vineyards and fragrant lemon groves that enhance its allure, making it a popular destination for those seeking both relaxation and adventure.",
+    similarPlaces: ["Cinque Terre", "Tuscany", "Pompeii"],
   },
   {
     id: 6,
@@ -51,7 +162,8 @@ const it = [
     category: "Architecture",
     tags: ["tower", "landmark", "Pisa"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "The Leaning Tower of Pisa is famous for its unintended tilt. Completed in the 14th century, this freestanding bell tower is part of the cathedral complex in Pisa and attracts millions of visitors each year.",
+    desc: "The Leaning Tower of Pisa is an architectural marvel famous for its unintended tilt. Completed in the 14th century as part of the cathedral complex in Pisa, this freestanding bell tower has become an iconic symbol of Italy. Visitors are drawn to this remarkable structure not only for its unique design but also for the breathtaking views it offers from the top. The tower's construction was fraught with challenges due to unstable foundations, yet it has stood the test of time and continues to attract millions of tourists eager to capture that perfect photo.",
+    similarPlaces: ["Florence", "Colosseum", "Venice"],
   },
   {
     id: 7,
@@ -60,7 +172,8 @@ const it = [
     category: "History",
     tags: ["archaeological site", "volcano", "Naples"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "Pompeii was an ancient Roman city that was buried under volcanic ash from Mount Vesuvius in AD 79. The site provides insight into Roman life and has been remarkably preserved, making it a major archaeological site.",
+    desc: "Pompeii was an ancient Roman city that met a tragic fate when it was buried under volcanic ash from Mount Vesuvius in AD 79. Today, this remarkable archaeological site provides invaluable insights into Roman life during its final days before the eruption. The well-preserved ruins showcase homes, public buildings, and intricate frescoes that allow visitors to step back in time and experience life as it was nearly two millennia ago. Pompeii stands as a testament to both the power of nature and the resilience of human history.",
+    similarPlaces: ["Herculaneum", "Colosseum", "Amalfi Coast"],
   },
   {
     id: 8,
@@ -69,25 +182,28 @@ const it = [
     category: "Nature",
     tags: ["coastal villages", "hiking"],
     image: "https://dummyimage.com/600x400/000/fff",
-    desc: "Cinque Terre consists of five charming coastal villages along the Italian Riviera. Known for their colorful houses and stunning sea views, these villages are popular for hiking and exploring picturesque landscapes.",
+    desc: "Cinque Terre consists of five charming coastal villages nestled along the stunning Italian Riviera. Known for their colorful houses that cling to steep cliffs overlooking crystal-clear waters, these villages are a paradise for hikers and nature lovers alike. The picturesque landscapes offer numerous trails that connect each village, allowing visitors to explore breathtaking views at every turn. Cinque Terre's unique charm lies not only in its natural beauty but also in its vibrant local culture and delicious seafood cuisine.",
+    similarPlaces: ["Amalfi Coast", "Venice", "Tuscany"],
   },
   {
-   id: 9,
-   name: "Tuscany",
-   country: "Italy",
-   category: "Nature",
-   tags: ["vineyards", "countryside", "wine"],
-   image:"https://dummyimage.com/600x400/000/fff",
-   desc:"Tuscany is famous for its rolling hills, vineyards, and olive groves. This region is known for producing some of Italy's finest wines and offers beautiful landscapes that have inspired artists for centuries.",
+    id: 9,
+    name: "Tuscany",
+    country: "Italy",
+    category: "Nature",
+    tags: ["vineyards", "countryside", "wine"],
+    image: "https://dummyimage.com/600x400/000/fff",
+    desc: "'Tuscany is renowned for its rolling hills adorned with lush vineyards and olive groves that stretch across the landscape like a beautiful patchwork quilt. This picturesque region is celebrated not only for producing some of Italy's finest wines but also for its breathtaking scenery that has inspired countless artists throughout history. Visitors to Tuscany can indulge in wine tastings at local wineries while enjoying panoramic views of vineyards set against a backdrop of charming medieval towns like San Gimignano and Siena.",
+    similarPlaces: ["Florence", "Cinque Terre", "Leaning Tower of Pisa"],
   },
   {
-   id: 10,
-   name:"Duomo di Milano",
-   country:"Italy",
-   category:"Architecture",
-   tags:["cathedral","Gothic","Milan"],
-   image:"https://dummyimage.com/600x400/000/fff",
-   desc:"The Duomo di Milano is one of the largest cathedrals in Europe, known for its stunning Gothic architecture. Construction began in the late 14th century and features intricate sculptures and beautiful stained glass windows.",
+    id: 10,
+    name: "Duomo di Milano",
+    country: "Italy",
+    category: "Architecture",
+    tags: ["cathedral", "Gothic", "Milan"],
+    image: "https://dummyimage.com/600x400/000/fff",
+    desc: "The Duomo di Milano stands as one of Europe's largest cathedrals, showcasing stunning Gothic architecture that captivates all who visit. Construction began in the late 14th century and spanned several centuries before completion; its intricate sculptures and beautiful stained glass windows reflect both artistic mastery and spiritual devotion. Visitors can ascend to its rooftop terraces for breathtaking views over Milan while marveling at the cathedral's elaborate façade adorned with countless spires.",
+    similarPlaces: ["Florence", "Vatican City", "Leaning Tower of Pisa"],
   },
 ];
 

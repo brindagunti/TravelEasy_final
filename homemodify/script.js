@@ -62,7 +62,7 @@ function displayPlaces(groupedData) {
       const link = document.createElement("a");
       // link.href = "https://www.youtube.com/results?search_query=" + place.name;
       // const jsonData = encodeURIComponent(JSON.stringify(place));
-      link.href = "specific.html?placeid=" + place.id;
+      link.href = "./homemodify/specific.html?placeid=" + place.id;
       link.target = "_self";
 
       const placeCard = document.createElement("div");

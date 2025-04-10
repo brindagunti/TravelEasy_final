@@ -22,19 +22,6 @@ const NEWS_API_URL = `https://newsapi.org/v2/everything?q=travel%20places&sortBy
 app.use(cors());
 app.use(bodyParser.json());
 
-var transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    service: "gmail",
-    auth: {
-        user: "noreply.traveleasy@gmail.com",  // Your Gmail address
-        pass: "dtljycjirumcpumz",                      // Your Gmail app password
-    },
-    port: 465,
-    secure: true,
-    connectionTimeout: 20000,  // Increased timeout
-    greetingTimeout: 20000,
-});
-
 
 
 // PostgreSQL connection
@@ -46,6 +33,39 @@ const pool = new Pool({
     port: 5432,
 });
 
+
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    service: "gmail",
+    auth: {
+        user: process.env.GMAIL_USER, // Your email from .env
+        pass: process.env.GMAIL_PASS, // App password from .env
+    },
+    port: 465,
+    secure: true,
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+});
+
+// Function to send emails
+const sendWelcomeEmail = async (to) => {
+    const mailOptions = {
+        from: process.env.GMAIL_USER, // Sender address
+        to, // Recipient's email
+        subject: "Welcome to Travel Easy!",
+        text: "Thank you for signing up for Travel Easy. We're excited to have you on board! Start exploring amazing travel destinations today.",
+    };
+
+    try {
+        const info = await transporter.sendMail(mailOptions);
+        console.log("Welcome email sent successfully:", info.response);
+    } catch (err) {
+        console.error("Error in sending welcome email:", err);
+    }
+};
+
+// Signup route
 app.post('/signup', async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -68,8 +88,10 @@ app.post('/signup', async (req, res) => {
         const newUser = insertResult.rows[0];
 
         // Generate JWT token
-        
-        const token = jwt.sign({ id: newUser.id, username: newUser.username },process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: newUser.id, username: newUser.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+        // Send welcome email
+        await sendWelcomeEmail(email);
 
         console.log('Sign-up successful:', newUser);
         res.json({ message: 'User created', token, username: newUser.username });
@@ -79,27 +101,20 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-
 // POST route for user sign-in
-async function findUser(usernameOrEmail) {
-    const query = 'SELECT * FROM users WHERE username = $1 OR email = $2';
-    const result = await pool.query(query, [usernameOrEmail, usernameOrEmail]);
-    return result.rows[0]; // Return the user object if found
-}
 app.post('/signin', async (req, res) => {
     const { usernameOrEmail, password } = req.body;
-    
+
     try {
-        // Assuming findUser() fetches the user from your database
-        const user = await findUser(usernameOrEmail);
+        // Check if user exists
+        const query = 'SELECT * FROM users WHERE username = $1 OR email = $2';
+        const result = await pool.query(query, [usernameOrEmail, usernameOrEmail]);
+        const user = result.rows[0];
 
         if (user && await bcrypt.compare(password, user.password)) {
-            // const token = jwt.sign({ id: user.id, username: user.username }, 'your_secret_key', { expiresIn: '1h' });
             const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '1h' });
-            console.log('Token being signed:', token); // In /signup and /signin
-
-            
-            res.json({ message: 'Signin successful', token, username: user.username });
+            console.log('Token being signed:', token); // Debugging token
+            res.json({ message: 'Signin successful', token, username: user.username,email: user.email });
         } else {
             res.status(400).json({ message: 'Invalid credentials' });
         }
@@ -109,16 +124,10 @@ app.post('/signin', async (req, res) => {
     }
 });
 
-
-
-
-
-
-
 //chatbot 
 
 // API Keys
-const genAI = new GoogleGenerativeAI("AIzaSyBBekBGy3SV5i44UBaJvXWIRT83iuH6kik");
+const genAI = new GoogleGenerativeAI("AIzaSyDyTQ4khLwCIxGxS-HBEAcXsbZv55_4LdU");
 const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // OpenWeather API key
@@ -197,84 +206,6 @@ if (botResponse) {
 });
 
 
-
-
-
-
-
-// // -------------- BLOG POSTS UPLOADS --------------
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//       cb(null, path.join(__dirname, './uploads/'));  // Save files in the /uploads directory
-//     },
-//     filename: (req, file, cb) => {
-//       cb(null, Date.now() + path.extname(file.originalname));  // Save with a timestamp and original extension
-//     }
-//   });
-  
-//   const upload = multer({ storage: storage });
-//   app.post('/api/blogs', upload.single('image'), async (req, res) => {
-//     try {
-//         const { description, user_id } = req.body;
-
-//         if (!req.file) {
-//             console.error('No file uploaded.');
-//             return res.status(400).send('No file uploaded.');
-//         }
-
-//         console.log('File Uploaded:', req.file);
-//         console.log('Request Body:', req.body);
-
-//         const imagePath = `http://localhost:${port}/uploads/${req.file.filename}`;
-//         const query = `
-//             INSERT INTO blogs (user_id, description, image_url)
-//             VALUES ($1, $2, $3)
-//             RETURNING id, description, image_url, user_id, created_at
-//         `;
-//         const values = [user_id, description, imagePath];
-//         const result = await pool.query(query, values);
-//         console.log('Insert Query Result:', result.rows);
-
-//         const userQuery = 'SELECT username FROM users WHERE id = $1';
-//         const userResult = await pool.query(userQuery, [user_id]);
-//         const username = userResult.rows[0]?.username;
-//         console.log('User Query Result:', userResult.rows);
-
-//         res.status(201).send({
-//             message: 'Blog post created successfully!',
-//             blog: {
-//                 id: result.rows[0].id,
-//                 user_id: result.rows[0].user_id,
-//                 description: result.rows[0].description,
-//                 image_url: result.rows[0].image_url,
-//                 created_at: result.rows[0].created_at,
-//                 username,
-//             },
-//         });
-//     } catch (err) {
-//         console.error('Error inserting blog into database:', err);
-//         res.status(500).send('Server Error: ' + err.message);
-//     }
-// });
-
-
-// app.get('/api/blogs', async (req, res) => {
-//     try {
-//         const result = await pool.query(`
-//             SELECT blogs.id, blogs.description, blogs.image_url, users.username, blogs.created_at
-//             FROM blogs
-//             JOIN users ON blogs.user_id = users.id
-//             ORDER BY blogs.id DESC
-//         `);
-//         res.status(200).send(result.rows);
-//     } catch (err) {
-//         console.error('Error fetching blogs from database:', err);
-//         res.status(500).send('Server Error: ' + err.message);
-//     }
-// });
-
-//   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // -------------- BLOG POSTS UPLOADS --------------
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -347,6 +278,22 @@ app.get('/api/blogs', authenticate, async (req, res) => {
         res.status(500).send('Server Error: ' + err.message);
     }
 });
+
+// Secure route for fetching blogs by the logged-in user
+app.get('/api/user-blogs', authenticate, async (req, res) => {
+    try {
+        const userId = req.user.id; // Extract the user's ID from the authenticated token
+        const result = await pool.query(
+            `SELECT id, description, image_url, created_at FROM blogs WHERE user_id = $1 ORDER BY id DESC`,
+            [userId]
+        );
+        res.status(200).send(result.rows);
+    } catch (err) {
+        console.error('Error fetching user blogs from database:', err);
+        res.status(500).send('Server Error: ' + err.message);
+    }
+});
+
 
 // Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .profile-card {
+      background-color: #f8f9fa;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .profile-info h5 {
+      margin-bottom: 5px;
+    }
+    .blogs-section {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand text-light" href="#">TravelEasy</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active text-light" aria-current="page" href="./Home.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="chatbot/public/chatbot.html">ChatBot</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/blog_posts/blogs.html">Blogs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="news.html">News Feed</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-light" href="/currency.html">Currency Converter</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-light"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Profile
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="./profile.html">My Profile</a></li>
+              <li><a class="dropdown-item" href="#">Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <!-- Profile Card -->
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="profile-card text-center">
+          <img src="./user_17740782.png" alt="Avatar" class="profile-avatar">
+          <h4 class="mt-2" id="username">John Doe</h4>
+          <p class="text-muted" id="email">johndoe@example.com</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Blogs Section -->
+    <div class="row justify-content-center blogs-section">
+      <div class="col-md-8">
+        <h5 class="text-center">Blogs Posted</h5>
+        <div id="blogs" class="list-group">
+          <!-- Blogs will be dynamically loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Fetch and display user profile
+      const username = localStorage.getItem('username');
+      const email = localStorage.getItem('email');
+      const token = localStorage.getItem('token');
+
+      if (username && email && token) {
+        document.getElementById('username').textContent = username;
+        document.getElementById('email').textContent = email;
+      } else {
+        // Redirect to login if user data is missing
+        window.location.href = '/signin.html';
+        return;
+      }
+
+      // Fetch blogs by the logged-in user
+      try {
+        const response = await fetch('http://localhost:3000/api/user-blogs', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, // Send the token in the headers
+          },
+        });
+
+        if (response.ok) {
+          const blogs = await response.json(); // Get blogs posted by the user
+          const blogsContainer = document.getElementById('blogs');
+
+          if (blogs.length === 0) {
+            blogsContainer.innerHTML = `<p class="text-muted text-center">No blogs posted yet.</p>`;
+          } else {
+            blogsContainer.innerHTML = blogs
+              .map(
+                (blog) => `
+                <a href="#" class="list-group-item list-group-item-action">
+                  <h6 class="mb-1">${blog.description}</h6>
+                  <img src="${blog.image_url}" alt="Blog Image" class="img-fluid rounded" style="max-height: 150px; object-fit: cover;" />
+                  <small class="text-muted">Posted on: ${new Date(blog.created_at).toLocaleString()}</small>
+                </a>
+              `
+              )
+              .join('');
+          }
+        } else if (response.status === 401) {
+          alert('Session expired. Please log in again.');
+          window.location.href = '/signin.html';
+        } else {
+          const errorMessage = await response.text();
+          alert('Error fetching blogs: ' + errorMessage);
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        alert('Network error. Please check your connection and try again.');
+      }
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

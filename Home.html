@@ -13,7 +13,7 @@
 <body>
   <nav class="navbar navbar-expand-lg bg-dark">
     <div class="container-fluid">
-      <a class="navbar-brand text-light" href="#">TravelEasy</a>
+      <a class="navbar-brand text-light" href="/Home.html">TravelEasy</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -21,10 +21,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active text-light" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-light" href="chatbot/public/chatbot.html">ChatBot</a>
+            <a class="nav-link text-light" href="/chatbot/public/chatbot.html">ChatBot</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-light" href="/blog_posts/blogs.html">Blogs</a>
@@ -38,9 +35,27 @@
         </ul>
         <ul class="navbar-nav ms-auto">
           <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle text-light"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Profile
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="./profile.html">My Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
       </div>
     </div>
   </nav>
+  
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4 image-column">
@@ -58,32 +73,134 @@
       <div class="main-text">Discover travel stories round the world</div>
     </div>
   </div>
-  <div class="plan">
-    <h2>Where to?</h2>
-    <h1>Plan your next trip</h1>
-  </div>
-  <div class="places">
-    <div>
-      <img src="/places/kashmir.jpg" alt="">
-      <h4>Kashmir</h4>
-    </div>
-    <div>
-      <img src="/places/hyd.jpg" alt="">
-      <h4>Hyderabad</h4>
-    </div>
-    <div>
-      <img src="/places/kerela.jpg" alt="">
-      <h4>Kerala</h4>
-    </div>
-    <div>
-      <img src="/places/manali.jpg" alt="">
-      <h4>Manali</h4>
-    </div>
-    <div>
-      <img src="/places/mumbai.jpg" alt="">
-      <h4>Mumbai</h4>
+  <div class="news-container">
+    <img src="https://images.unsplash.com/photo-1529074963764-98f45c47344b?q=80&w=2086&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+  
+        <div class="news-container-text">
+        <h1>Hot Takes, <span style="color: red;">Real News</span> – No Cap!</h1>
+        <button>Know More</button>
     </div>
   </div>
+  <section class="tourist-attractions">
+    <h2>Famous Tourist Attraction</h2>
+    <div class="grid-container">
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/lakshadweep.svg" alt="Lakshadweep">
+            <p>Lakshadweep</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/andaman-new.png" alt="Andaman">
+            <p>Andaman</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/kashmir.svg" alt="Kashmir">
+            <p>Kashmir</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/jaipur.svg" alt="Jaipur">
+            <p>Jaipur</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/bangalore.svg" alt="Bengaluru">
+            <p>Bengaluru</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/paris.svg" alt="Paris">
+            <p>Paris</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/leh.svg" alt="Leh">
+            <p>Leh</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/bali-indonesia.svg" alt="Bali">
+            <p>Bali</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/dubai.svg" alt="Dubai">
+            <p>Dubai</p>
+        </div>
+        <div class="place">
+            <img src="https://images.emtcontent.com/desk-img/hol-icon/kerala.svg" alt="Kerala">
+            <p>Kerala</p>
+        </div>
+    </div>
+</section>
+
+<!-- blogs -->
+<h2 style="text-align: center;"><b>Enjoy Fresh Travel Blogs</b></h2>
+<div class="blog-container">
+  <div class="header">
+
+  </div>
+
+  <div class="blog-grid">
+      <div class="blog-item">
+          <a href="" target="_blank">
+              <div class="blog-box">
+                  <div class="blog-category">Holiday Destinations</div>
+                  <div class="blog-img">
+                      <img src="https://images.emtcontent.com/offer-img/family-vacation-destinations-hp.webp" alt="Budget-Friendly Vacation">
+                  </div>
+                  <div class="blog-body">
+                      <span class="blog-url">Read More</span>
+                  </div>
+                  <div class="blog-title">Budget-Friendly Family Vacation Destinations Around the World</div>
+              </div>
+          </a>
+      </div>
+
+      <div class="blog-item">
+          <a href="" target="_blank">
+              <div class="blog-box">
+                  <div class="blog-category">Holiday Destinations</div>
+                  <div class="blog-img">
+                      <img src="https://images.emtcontent.com/offer-img/hidden-beaches-in-goa-hp.webp" alt="Hidden Beaches Goa">
+                  </div>
+                  <div class="blog-body">
+                      <span class="blog-url">Read More</span>
+                  </div>
+                  <div class="blog-title">Hidden Beaches in Goa</div>
+              </div>
+          </a>
+      </div>
+
+      <div class="blog-item">
+          <a href="" target="_blank">
+              <div class="blog-box">
+                  <div class="blog-category">Holiday Destinations</div>
+                  <div class="blog-img">
+                      <img src="https://images.emtcontent.com/offer-img/national-parks-in-chattisgarh-hp.webp" alt="Wildlife Chhattisgarh">
+                  </div>
+                  <div class="blog-body">
+                      <span class="blog-url">Read More</span>
+                  </div>
+                  <div class="blog-title">Best Wildlife Sanctuaries and National Parks in Chhattisgarh</div>
+              </div>
+          </a>
+      </div>
+
+      <div class="blog-item">
+          <a href="" target="_blank">
+              <div class="blog-box">
+                  <div class="blog-category">Holiday Destinations</div>
+                  <div class="blog-img">
+                      <img src="https://images.emtcontent.com/offer-img/weekend-getaways-from-delhi-hp.webp" alt="Weekend Getaways Delhi">
+                  </div>
+                  <div class="blog-body">
+                      <span class="blog-url">Read More</span>
+                  </div>
+                  <div class="blog-title">10 Offbeat Weekend Getaways From Delhi for Nature Lovers</div>
+              </div>
+          </a>
+      </div>
+  </div>
+
+  <div class="view-all">
+      <a href="" target="_blank">View All</a>
+  </div>
+</div>
+
   <footer class="footer">
     <div class="container">
       <div class="row">
@@ -175,7 +292,7 @@
       </div>
     </div>
   </footer>
- 
+  <script type="module" src="./new_home/script.js" alt=""></script>
   <script src="https://kit.fontawesome.com/a076d05399.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

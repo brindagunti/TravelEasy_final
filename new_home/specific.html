@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.25" />
+    <title>View Page</title>
+    <!-- <link rel="stylesheet" href="styles.css" /> -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f8ff; /* Light blue background */
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      .background-image {
+        position: relative;
+        height: 600px; /* Adjust height as needed */
+        background-size: cover;
+        background-position: center;
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent overlay */
+        color: white; /* Text color */
+        padding: 20px;
+      }
+
+      .header {
+        text-align: start;
+      }
+
+      .description {
+        margin-top: 20px;
+        line-height: 1.6;
+      }
+
+      .suggestions,
+      .details {
+        margin-top: 20px;
+      }
+
+      .suggestions ul,
+      .details ul {
+        list-style-type: none;
+        padding-left: 0;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 40px;
+      }
+      #placesContainer {
+        padding: 20px;
+        display: flex;
+        height: 350px;
+        gap: 20px;
+      }
+      #catdiv {
+        padding: 20px;
+        display: flex;
+        height: 350px;
+        gap: 20px;
+      }
+
+      h3 {
+        margin: 20px 0 10px;
+        font-size: 24px;
+        color: #333;
+      }
+
+      .country-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        gap: 20px;
+        overflow-x: auto;
+        padding-bottom: 20px;
+
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none;
+      }
+
+      .place-card {
+        position: relative;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        /* width: 400px; */
+        /* height: 400px; */
+        padding: 10px;
+        box-sizing: border-box;
+        flex: 0 0 auto;
+        background-color: #fff;
+        transition: box-shadow 0.3s ease;
+      }
+
+      .place-card:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .place-card img {
+        width: 300px;
+        height: 250px;
+        border-radius: 5px;
+        transition: transform 0.3s ease;
+      }
+
+      .place-card:hover img {
+        transform: scale(1.2);
+      }
+
+      .place-card h4 {
+        margin: 10px 0 5px;
+        font-size: 18px;
+        color: #333;
+        text-align: center;
+      }
+
+      .place-card .description {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 10px;
+        display: none;
+        font-size: 14px;
+        word-break: break-word;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 8px;
+
+        /* Ensure height matches line clamp */
+      }
+
+      .place-card:hover .description {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-height: calc(1.5em * 3);
+        -webkit-line-clamp: 3;
+        height: calc(1.5em * 3);
+        transform: scale(1.13);
+      }
+      a {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container" id="place-container">
+      <!-- all the code are in the spec.js file -->
+    </div>
+
+    <script type="module" src="./spec.js"></script>
+  </body>
+</html>

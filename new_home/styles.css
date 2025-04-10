@@ -1,0 +1,46 @@
+/* .places {
+  /* display: flex; */
+/* flex-direction: row; */
+/* overflow-x: auto; */
+/* white-space: nowrap; */
+/* padding-left: 2%; */
+/* padding-bottom: 2%; */
+/* gap: 20px; */
+/* } */
+
+#placesContainer {
+  margin: 20px;
+}
+
+h3 {
+  color: #2c3e50; /* Darker color for country names */
+}
+
+.no-scrollbar {
+  overflow-x: auto; /* Enable horizontal scrolling */
+  overflow-y: hidden; /* Hide vertical overflow */
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.places {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding-left: 2%;
+  padding-bottom: 2%;
+  gap: 20px;
+}
+.places img {
+  height: 300px;
+  width: 400px;
+  border-radius: 10%;
+}
+.places h4 {
+  text-align: center;
+}

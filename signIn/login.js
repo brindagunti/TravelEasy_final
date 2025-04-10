@@ -124,6 +124,7 @@ async function handleSignin(event) {
             alert('Sign-in successful!');
             localStorage.setItem('token', data.token);
             localStorage.setItem('username', data.username);
+            localStorage.setItem('email', data.email);
             window.location.href = '/Home.html';
         } else {
             const errorData = await response.json();
